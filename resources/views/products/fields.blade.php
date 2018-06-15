@@ -25,7 +25,7 @@
 <!-- Images Field -->
 <div class="form-group col-sm-12 col-lg-12">
     {!! Form::label('images', 'Images:') !!}
-    {!! Form::bsImage('images[]')!!}
+    {!! Form::bsImage('images[]',$product->images??[])!!}
 </div>
 
 <!-- Inspection Reports Field -->
@@ -37,7 +37,7 @@
 <!-- Inspection Date Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('inspection_date', 'Inspection Date:') !!}
-    {!! Form::date('inspection_date', $product->inspection_date, ['class' => 'form-control']) !!}
+    {!! Form::date('inspection_date', $product->inspection_date??'', ['class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->

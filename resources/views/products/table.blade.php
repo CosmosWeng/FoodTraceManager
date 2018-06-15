@@ -7,7 +7,7 @@
             <th>Company</th>
             <th>Name</th>
             <th>Url</th>
-            <th>Images</th>
+            {{-- <th>Images</th> --}}
             {{-- <th>Inspection Reports</th>
             <th>Inspection Date</th> --}}
         </tr>
@@ -28,7 +28,7 @@
             <td>{!! $product->company !!}</td>
             <td>{!! $product->name !!}</td>
             <td>{!! $product->url !!}</td>
-            <td>{!! $product->images !!}</td>
+            {{-- <td>{!! $product->images !!}</td> --}}
             {{-- <td>{!! $product->inspection_reports !!}</td>
             <td>{!! $product->inspection_date !!}</td> --}}
 

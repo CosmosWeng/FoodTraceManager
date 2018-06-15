@@ -46,7 +46,13 @@ class ProductController extends AppBaseController
      */
     public function create()
     {
-        return view('products.create');
+        $category   =  Category::get();
+        $categories = [];
+        foreach ($category as $value) {
+            $categories[$value->id] = $value->name;
+        }
+
+        return view('products.create')->with('categories', $categories);
     }
 
     /**
@@ -98,6 +104,7 @@ class ProductController extends AppBaseController
     {
         $product    = $this->productRepository->findWithoutFail($id);
         $category   =  Category::get();
+        $categories = [];
         foreach ($category as $value) {
             $categories[$value->id] = $value->name;
         }
@@ -107,10 +114,7 @@ class ProductController extends AppBaseController
 
             return redirect(route('admin.products.index'));
         }
-
-        // Registering Form Component
-        Form::component('bsImage', 'components.images', ['name','images' => $product->images]);
-
+        
         return view('products.edit')->with('product', $product)->with('categories', $categories);
     }
 
