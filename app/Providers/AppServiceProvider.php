@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Form;
+use DB;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // SQL Logs
+        if (config('app.debug')) {
+            DB::enableQueryLog();
+        }
+      
         //
         Form::component('bsImage', 'components.images', ['name','images','attributes']);
     }

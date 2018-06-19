@@ -13,13 +13,10 @@ use Eloquent as Model;
  */
 class Category extends Model
 {
-
     public $table = 'categories';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
 
     public $fillable = [
         'name'
@@ -31,7 +28,7 @@ class Category extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id'   => 'integer',
         'name' => 'string'
     ];
 
@@ -41,8 +38,10 @@ class Category extends Model
      * @var array
      */
     public static $rules = [
-        
     ];
 
-    
+    public function products()
+    {
+        return $this->hasMany('App\Models\Product');
+    }
 }

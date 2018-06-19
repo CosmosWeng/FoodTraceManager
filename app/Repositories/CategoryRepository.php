@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Category findWithoutFail($id, $columns = ['*'])
  * @method Category find($id, $columns = ['*'])
  * @method Category first($columns = ['*'])
-*/
+ */
 class CategoryRepository extends BaseRepository
 {
     /**

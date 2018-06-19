@@ -7,7 +7,6 @@
 |
 */
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Repository Pagination Limit Default
@@ -15,7 +14,7 @@ return [
     |
     */
     'pagination' => [
-        'limit' => 15
+        'limit' => 100
     ],
 
     /*
@@ -83,7 +82,6 @@ return [
           |
           */
         'clean'      => [
-
             /*
               |--------------------------------------------------------------------------
               | Enable clear cache on repository changes
@@ -226,10 +224,10 @@ return [
     |
     */
     'generator'  => [
-        'basePath'      => app()->path(),
-        'rootNamespace' => 'App\\',
+        'basePath'          => app()->path(),
+        'rootNamespace'     => 'App\\',
         'stubsOverridePath' => app()->path(),
-        'paths'         => [
+        'paths'             => [
             'models'       => 'Entities',
             'repositories' => 'Repositories',
             'interfaces'   => 'Repositories',
