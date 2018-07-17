@@ -18,6 +18,8 @@ class CreateProductsTable extends Migration
             $table->integer('category_id')->comment('產品分類ID');
             $table->text('company')->comment('公司名稱');
             $table->text('name')->comment('產品名稱');
+            
+            $table->text('description')->nullable()->comment('產品描述');
             $table->text('url')->nullable()->comment('產品網址');
             $table->json('images')->comment('圖片');
             $table->json('inspection_reports')->nullable()->comment('檢驗報告');

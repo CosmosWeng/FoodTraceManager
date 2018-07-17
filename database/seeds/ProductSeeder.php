@@ -79,6 +79,7 @@ class ProductSeeder extends Seeder
               'category_id'        => $category_id,
               'company'            => $data->company,
               'name'               => $data->name,
+              'description'        => $data->specifications,
               'images'             => Util::JsonEncode($images),
               'inspection_reports' => Util::JsonEncode($inspection_reports),
               'inspection_date'    => $data->inspection_date
