@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\API\CreateProductsAPIRequest;
-use App\Http\Requests\API\UpdateProductsAPIRequest;
-use App\Models\Products;
-use App\Repositories\ProductsRepository;
+use App\Http\Requests\API\CreateProductAPIRequest;
+use App\Http\Requests\API\UpdateProductAPIRequest;
+use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
@@ -18,12 +18,12 @@ use Response;
  */
 class ProductsAPIController extends AppBaseController
 {
-    /** @var  ProductsRepository */
-    private $productsRepository;
+    /** @var  ProductRepository */
+    private $productRepository;
 
-    public function __construct(ProductsRepository $productsRepo)
+    public function __construct(ProductRepository $productRepo)
     {
-        $this->productsRepository = $productsRepo;
+        $this->productRepository = $productRepo;
     }
 
     /**
@@ -60,14 +60,15 @@ class ProductsAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->productsRepository->pushCriteria(new RequestCriteria($request));
-        $products = $this->productsRepository->paginate($request->get('limit', null));
-
+        $this->productRepository->pushCriteria(new RequestCriteria($request));
+        $this->productRepository->with(['category:id,name']);
+        $products = $this->productRepository->paginate($request->get('limit', null));
+        
         return $this->sendPaginateResponse($products->toArray(), 'Products retrieved successfully');
     }
 
     /**
-     * @param CreateProductsAPIRequest $request
+     * @param CreateProductAPIRequest $request
      * @return Response
      *
      * @SWG\Post(
@@ -104,11 +105,11 @@ class ProductsAPIController extends AppBaseController
      *      )
      * )
      */
-    // public function store(CreateProductsAPIRequest $request)
+    // public function store(CreateProductAPIRequest $request)
     // {
     //     $input = $request->all();
     //
-    //     $products = $this->productsRepository->create($input);
+    //     $products = $this->productRepository->create($input);
     //
     //     return $this->sendResponse($products->toArray(), 'Products saved successfully');
     // }
@@ -154,8 +155,9 @@ class ProductsAPIController extends AppBaseController
     public function show($id)
     {
         /** @var Products $products */
-        $products = $this->productsRepository->findWithoutFail($id);
-
+        $products                = $this->productRepository->with(['category:id,name'])->findWithoutFail($id);
+        // $products->category_name = $products->category->name;
+        
         if (empty($products)) {
             return $this->sendError('Products not found');
         }
@@ -165,7 +167,7 @@ class ProductsAPIController extends AppBaseController
 
     /**
      * @param int $id
-     * @param UpdateProductsAPIRequest $request
+     * @param UpdateProductAPIRequest $request
      * @return Response
      *
      * @SWG\Put(
@@ -209,18 +211,18 @@ class ProductsAPIController extends AppBaseController
      *      )
      * )
      */
-    // public function update($id, UpdateProductsAPIRequest $request)
+    // public function update($id, UpdateProductAPIRequest $request)
     // {
     //     $input = $request->all();
     //
     //     /** @var Products $products */
-    //     $products = $this->productsRepository->findWithoutFail($id);
+    //     $products = $this->productRepository->findWithoutFail($id);
     //
     //     if (empty($products)) {
     //         return $this->sendError('Products not found');
     //     }
     //
-    //     $products = $this->productsRepository->update($input, $id);
+    //     $products = $this->productRepository->update($input, $id);
     //
     //     return $this->sendResponse($products->toArray(), 'Products updated successfully');
     // }
@@ -266,7 +268,7 @@ class ProductsAPIController extends AppBaseController
     // public function destroy($id)
     // {
     //     /** @var Products $products */
-    //     $products = $this->productsRepository->findWithoutFail($id);
+    //     $products = $this->productRepository->findWithoutFail($id);
     //
     //     if (empty($products)) {
     //         return $this->sendError('Products not found');

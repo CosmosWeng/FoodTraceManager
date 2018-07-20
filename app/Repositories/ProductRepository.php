@@ -13,7 +13,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Product findWithoutFail($id, $columns = ['*'])
  * @method Product find($id, $columns = ['*'])
  * @method Product first($columns = ['*'])
-*/
+ */
 class ProductRepository extends BaseRepository
 {
     /**
