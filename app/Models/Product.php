@@ -46,7 +46,7 @@ class Product extends Model
         'name'               => 'string',
         'url'                => 'string',
         'images'             => 'array',
-        'inspection_reports' => 'string',
+        'inspection_reports' => 'array',
         'inspection_date'    => 'date'
     ];
 
