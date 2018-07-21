@@ -15,6 +15,7 @@ class ResponseUtil
     {
         $response = [
             'code'    => $code,
+            'data'    => null,
             'message' => $message,
         ];
         
