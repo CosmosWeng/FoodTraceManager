@@ -4,6 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
+use App\Models\LogError;
+use App\Utils\ResponseUtil;
+use Response;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +50,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->is('api/*')) {
+            $log = [
+              'message'   => $exception->getMessage(),
+              'exception' => get_class($exception),
+              'file'      => $exception->getFile(),
+              'line'      => $exception->getLine(),
+              'trace'     => collect($exception->getTrace())->map(function ($trace) {
+                  return Arr::except($trace, ['args']);
+              })->all(),
+            ];
+            // dd($log, $exception);
+            LogError::create($log);
+
+            return Response::json(ResponseUtil::makeResponse(__('error.undefined')), 500);
+        }
+
         return parent::render($request, $exception);
     }
 }
