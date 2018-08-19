@@ -21,3 +21,7 @@ Route::resource('products', 'API\ProductsAPIController');
 
 Route::get('categories', 'API\CategoryAPIController@index');
 // Route::get('categories/{id}/products', 'API\CategoryAPIController@getProducts');
+
+Route::resource('topics', 'API\TopicAPIController');
+
+Route::resource('knowledge', 'API\KnowledgeAPIController');

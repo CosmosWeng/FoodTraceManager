@@ -49,6 +49,13 @@ class Product extends Model
         'inspection_reports' => 'array',
         'inspection_date'    => 'date'
     ];
+    
+    public function getInspectionDateAttribute($value): string
+    {
+        $date = $this->asDateTime($value);
+
+        return $date->format('Y-m-d');
+    }
 
     /**
      * Validation rules
