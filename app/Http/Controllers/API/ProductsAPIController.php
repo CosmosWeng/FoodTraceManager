@@ -62,7 +62,7 @@ class ProductsAPIController extends AppBaseController
     {
         $this->productRepository->pushCriteria(new RequestCriteria($request));
         $this->productRepository->with(['category:id,name']);
-        $products = $this->productRepository->paginate((int)$request->get('limit', null));
+        $products = $this->productRepository->paginate($request->get('limit', null));
         
         return $this->sendPaginateResponse($products->toArray(), 'Products retrieved successfully');
     }

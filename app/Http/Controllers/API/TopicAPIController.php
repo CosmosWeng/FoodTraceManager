@@ -16,7 +16,6 @@ use Response;
  * Class TopicController
  * @package App\Http\Controllers\API
  */
-
 class TopicAPIController extends AppBaseController
 {
     /** @var  TopicRepository */
@@ -62,10 +61,9 @@ class TopicAPIController extends AppBaseController
     public function index(Request $request)
     {
         $this->topicRepository->pushCriteria(new RequestCriteria($request));
-        $this->topicRepository->pushCriteria(new LimitOffsetCriteria($request));
-        $topics = $this->topicRepository->all();
+        $topics = $this->topicRepository->paginate($request->get('limit', null));
 
-        return $this->sendResponse($topics->toArray(), 'Topics retrieved successfully');
+        return $this->sendPaginateResponse($topics->toArray(), 'Topics retrieved successfully');
     }
 
     /**

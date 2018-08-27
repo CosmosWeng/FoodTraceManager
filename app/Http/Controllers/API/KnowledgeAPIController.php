@@ -16,7 +16,6 @@ use Response;
  * Class KnowledgeController
  * @package App\Http\Controllers\API
  */
-
 class KnowledgeAPIController extends AppBaseController
 {
     /** @var  KnowledgeRepository */
@@ -62,10 +61,9 @@ class KnowledgeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $this->knowledgeRepository->pushCriteria(new RequestCriteria($request));
-        $this->knowledgeRepository->pushCriteria(new LimitOffsetCriteria($request));
-        $knowledge = $this->knowledgeRepository->all();
+        $knowledge = $this->knowledgeRepository->paginate($request->get('limit', null));
 
-        return $this->sendResponse($knowledge->toArray(), 'Knowledge retrieved successfully');
+        return $this->sendPaginateResponse($knowledge->toArray(), 'Knowledge retrieved successfully');
     }
 
     /**
