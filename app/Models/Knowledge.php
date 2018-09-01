@@ -20,8 +20,13 @@ use Eloquent as Model;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="images",
- *          description="images",
+ *          property="image",
+ *          description="image",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="url",
+ *          description="url",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -41,7 +46,8 @@ class Knowledge extends Model
 
     public $fillable = [
         'title',
-        'images',
+        'image',
+        'url',
         'date'
     ];
 
@@ -51,19 +57,20 @@ class Knowledge extends Model
      * @var array
      */
     protected $casts = [
-        'id'     => 'integer',
-        'title'  => 'string',
-        'images' => 'array',
-        'date'   => 'date'
+        'id'    => 'integer',
+        'title' => 'string',
+        'image' => 'string',
+        'url'   => 'string',
+        'date'  => 'date'
     ];
     
     public function getDateAttribute($value): string
     {
         $date = $this->asDateTime($value);
 
-        return $date->format('Y-m-d');
+        return $date->format('Y-m-d H:m:s');
     }
-
+    
     /**
      * Validation rules
      *

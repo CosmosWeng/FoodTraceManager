@@ -43,7 +43,8 @@ trait MakeKnowledgeTrait
 
         return array_merge([
             'title' => $fake->text,
-            'images' => $fake->text,
+            'image' => $fake->text,
+            'url' => $fake->text,
             'date' => $fake->word,
             'updated_at' => $fake->date('Y-m-d H:i:s'),
             'created_at' => $fake->date('Y-m-d H:i:s')

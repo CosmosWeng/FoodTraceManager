@@ -9,3 +9,7 @@
     <a href="{!! route('admin.products.index') !!}"><i class="fa fa-edit"></i><span>Products</span></a>
 </li>
 
+<li class="{{ Request::is('knowledge*') ? 'active' : '' }}">
+    <a href="{!! route('knowledge.index') !!}"><i class="fa fa-edit"></i><span>Knowledge</span></a>
+</li>
+

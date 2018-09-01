@@ -15,13 +15,16 @@ class KnowledgeSeeder extends Seeder
         //
         $faker = Faker\Factory::create('zh_TW');
         $faker->addProvider(new EmanueleMinotto\Faker\PlaceholdItProvider($faker));
+        $faker->addProvider(new Faker\Provider\Youtube($faker));
+        
         $this->faker = $faker;
         
         for ($i = 0; $i < 50; $i++) {
             $data  = [
               'title'  => $faker->realText($faker->numberBetween(10, 20)),
-              'images' => $this->randImage(rand(2, 5)),
-              'date'   => $faker->dateTimeBetween('now', '10 years')->format('Y-m-d H:i:s')
+              'image'  => $this->randImage(rand(2, 5)),
+              'date'   => $faker->dateTimeBetween('now', '10 years')->format('Y-m-d H:i:s'),
+              'url'    => $faker->youtubeUri()
             ];
             Knowledge::create($data);
         }
@@ -36,6 +39,6 @@ class KnowledgeSeeder extends Seeder
             $images[] = $this->faker->imageUrl(['800', '600'], 'png', [$background[rand(0, 4)], $foreground[rand(0, 4)]]);
         }
 
-        return $images;
+        return $images[0];
     }
 }

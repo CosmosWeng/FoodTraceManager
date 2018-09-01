@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class KnowledgeRepository
  * @package App\Repositories
- * @version August 19, 2018, 11:50 pm CST
+ * @version September 1, 2018, 12:10 pm CST
  *
  * @method Knowledge findWithoutFail($id, $columns = ['*'])
  * @method Knowledge find($id, $columns = ['*'])
@@ -21,7 +21,8 @@ class KnowledgeRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'title',
-        'images',
+        'image',
+        'url',
         'date'
     ];
 
