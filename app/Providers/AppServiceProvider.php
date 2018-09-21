@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-use Form;
 use DB;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @return void
+     * * @return void
      */
     public function boot()
     {
@@ -21,9 +20,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.debug')) {
             DB::enableQueryLog();
         }
-      
-        //
-        Form::component('bsImage', 'components.images', ['name', 'images', 'attributes']);
     }
 
     /**

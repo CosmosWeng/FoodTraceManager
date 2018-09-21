@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('admin/opendatas/{opendatas}', ['as' => 'admin.opendatas.destroy', 'uses' => 'OpendataController@destroy']);
     Route::get('admin/opendatas/{opendatas}', ['as' => 'admin.opendatas.show', 'uses' => 'OpendataController@show']);
     Route::get('admin/opendatas/{opendatas}/edit', ['as' => 'admin.opendatas.edit', 'uses' => 'OpendataController@edit']);
-  
+
     Route::get('admin/products', ['as' => 'admin.products.index', 'uses' => 'ProductController@index']);
     Route::post('admin/products', ['as' => 'admin.products.store', 'uses' => 'ProductController@store']);
     Route::get('admin/products/create', ['as' => 'admin.products.create', 'uses' => 'ProductController@create']);
@@ -45,6 +45,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/products/{products}', ['as' => 'admin.products.show', 'uses' => 'ProductController@show']);
     Route::get('admin/products/{products}/edit', ['as' => 'admin.products.edit', 'uses' => 'ProductController@edit']);
 });
-
-
-Route::resource('knowledge', 'KnowledgeController');
+Route::get('google_sheet_sync', 'GoogleSheetSyncController@index');

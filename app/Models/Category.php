@@ -14,7 +14,7 @@ use Eloquent as Model;
 class Category extends Model
 {
     public $table = 'categories';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -40,6 +40,11 @@ class Category extends Model
     public static $rules = [
     ];
 
+    /**
+     * Products
+     *
+     * @return void
+     */
     public function products()
     {
         return $this->hasMany('App\Models\Product');

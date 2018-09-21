@@ -148,11 +148,11 @@ return [
         /*
          * Package Service Providers...
          */
-         Yajra\DataTables\DataTablesServiceProvider::class,
-         Recca0120\LaravelTracy\LaravelTracyServiceProvider::class,
-         Collective\Html\HtmlServiceProvider::class,
-         Laracasts\Flash\FlashServiceProvider::class,
-
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        Recca0120\LaravelTracy\LaravelTracyServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -208,7 +208,7 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
-        
+
         'Datatables' => Yajra\DataTables\Facades\DataTables::class
     ],
 ];
