@@ -5,88 +5,171 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Google_Client;
 use Google_Service_Sheets;
+use Google_Service_Drive;
+use DB;
+use Schema;
+use App\Utils\Util;
+use App\Models\Product;
+use App\Models\Category;
 
-class GoogleSheetSyncController extends Controller
+class GoogleSheetSyncController extends AppBaseController
 {
     /**
-     * Display a listing of the resource.
+     * Undocumented function
      *
-     *
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response response
+     * @param Request $request
+     * @return void
      */
-    public function index(Request $request)
+    public function sync(Request $request)
     {
-        //
-        $client = new Google_Client();
-        $client->setApplicationName('Client_Library_Examples');
-        $client->setDeveloperKey(env('GOOGLE_CLIENT_KEY'));
+        $config = $this->getConfig();
+        // clear data
+        DB::table('categories')->truncate();
 
-        $service = new Google_Service_Sheets($client);
+        header('Content-type: text/html; charset=utf-8');
+        for ($i = 0; $i < 10; $i++) {
+            echo $i;
+            flush();
+            sleep(1);
+        }
 
-        // Prints the names and majors of students in a sample spreadsheet:
-        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-        $spreadsheetId = '1BIqjLtauqhtIjX1b9EmmYPbY9zHS9jJs7MdcsaGEcOM';
-        $range         = '麵粉!A2:E';
-        $response      = $service->spreadsheets_values->get($spreadsheetId, $range);
-        $values        = $response->getValues();
+        // run setting
+        // foreach ($config as $index => $setting) {
+        //     $this->format($setting);
+        // }
+    }
 
-        dd($values);
+    public function format(array $data)
+    {
+        $tableType               = array_shift($data);
+        list($tableName, $type)  = array_pad(explode(':', $tableType), 2, null);
+        if ($tableName == 'category' && $type) {
+            $this->setCategory($type, $data);
+        }
 
-        if (empty($values)) {
-            print "No data found.\n";
-        } else {
-            print "Name, Major:\n";
-            // foreach ($values as $row) {
-            //     // Print columns A and E, which correspond to indices 0 and 4.
-            //     printf("%s, %s\n", $row[0], $row[4]);
-            // }
+        $method = 'set'.ucfirst($tableName);
+        if (empty($type) && method_exists($this, $method)) {
+            $this->$method($data);
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function getProductField($data, $changType = false)
     {
-        //
+        $setting = [];
+        foreach ($data as $value) {
+            list($fieldName, $fieldKey, $fieldType) = array_pad(explode(':', $value), 3, null);
+            if (empty($fieldName) || empty($fieldKey)) {
+                // 格式錯誤
+                return false;
+            }
+            if ($fieldKey == 'null') {
+                continue;
+            }
+
+            if ($changType) {
+                $setting[$fieldKey] = $fieldType;
+            } else {
+                $setting[$fieldKey] = $fieldName;
+            }
+        }
+
+        return $setting;
+    }
+
+    public function setProducts($data)
+    {
+        # code...
+        $setting    = $this->getProductField($data);
+        $categories = DB::table('categories')->where('type', 'products')->get();
+        $products   = [];
+        foreach ($categories as $category) {
+            $sheets = $this->run($category->name);
+            $key    = array_shift($sheets);
+
+            $productIndex = [];
+            foreach ($setting as $field => $value) {
+                foreach ($key as $index => $keyVal) {
+                    if ($value == $keyVal) {
+                        $productIndex[$field] = $index;
+                        continue;
+                    }
+                }
+            }
+            // dd($productIndex, $key, $sheets);
+            $type = $this->getProductField($data, true);
+            foreach ($sheets as $sheet) {
+                foreach ($productIndex as $field => $index) {
+                    if (isset($sheet[$index])) {
+                        if (isset($type[$field]) && $type[$field]) {
+                            if ($type[$field] == 'array') {
+                                $product[$field] = Util::JsonEncode(explode("\n", $sheet[$index]));
+                            }
+                        } else {
+                            $product[$field] = $sheet[$index];
+                        }
+                    }
+                }
+                $product['category_id'] = $category->id;
+                $products[]             = $product;
+            }
+        }
+        // dd($products);
+        $db = DB::table('products');
+        $db->truncate();
+        $db->insert($products);
+        // copy image
+    }
+
+    public function setCategory($type, $data)
+    {
+        $data = array_map(function ($row) use ($type) {
+            return [
+                'name' => $row,
+                'type' => $type
+            ];
+        }, $data);
+
+        DB::table('categories')->insert($data);
     }
 
     /**
-     * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function getConfig()
     {
-        //
+        $config = $this->run(env('SHEET_CONFIG_NAME', '設定'));
+        $key    = array_shift($config);
+
+        return $config;
     }
 
     /**
-     * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function run($range = '設定')
     {
-        //
-    }
+        $client = new Google_Client();
+        $client->setApplicationName('Foodsafy');
+        $client->setDeveloperKey(env('GOOGLE_CLIENT_KEY'));
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $spreadsheetId = env('GOOGLE_SPREAD_SHEET_Id');
+
+        // File 修改時間
+        $service       = new Google_Service_Drive($client);
+        $response      = $service->files->get($spreadsheetId, ['fields' => 'id,name,modifiedTime']);
+        $modifiedTime  = $response->modifiedTime;
+
+        // Sheet
+        $service       = new Google_Service_Sheets($client);
+        $response      = $service->spreadsheets_values->get($spreadsheetId, $range);
+        $values        = $response->getValues();
+
+        if (empty($values)) {
+            print "No data found.\n";
+
+            return $this->sendError('No data found.');
+        }
+
+        return $values;
     }
 }

@@ -19,7 +19,8 @@ class Category extends Model
     const UPDATED_AT = 'updated_at';
 
     public $fillable = [
-        'name'
+        'name',
+        'type'
     ];
 
     /**
@@ -29,7 +30,8 @@ class Category extends Model
      */
     protected $casts = [
         'id'   => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'type' => 'string'
     ];
 
     /**

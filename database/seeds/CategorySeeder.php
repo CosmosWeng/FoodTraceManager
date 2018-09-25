@@ -12,11 +12,12 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = ['米','麵粉','麵條','食用油','乳製品','蛋'];
+        $categories = ['米', '麵粉', '麵條', '食用油', '乳製品', '蛋'];
         $data       = [];
         foreach ($categories as $category) {
             $data[] = [
-              'name' => $category
+                'name' => $category,
+                'type' => 'product'
             ];
         }
         Category::insert($data);

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Utils\Util;
 
 /**
  * Class Product
@@ -20,7 +21,7 @@ use Eloquent as Model;
 class Product extends Model
 {
     public $table = 'products';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -30,6 +31,7 @@ class Product extends Model
         'name',
         'url',
         'images',
+        'inspection_text',
         'inspection_reports',
         'inspection_date'
     ];
@@ -46,15 +48,36 @@ class Product extends Model
         'name'               => 'string',
         'url'                => 'string',
         'images'             => 'array',
+        'inspection_text'    => 'string',
         'inspection_reports' => 'array',
         'inspection_date'    => 'date'
     ];
-    
+
     public function getInspectionDateAttribute($value): string
     {
         $date = $this->asDateTime($value);
 
         return $date->format('Y-m-d');
+    }
+
+    public function getImagesAttribute($images) : array
+    {
+        $images = Util::JsonDecode($images);
+        foreach ($images as &$image) {
+            $image = url('storage/images/'.$image);
+        }
+
+        return $images;
+    }
+
+    public function getInspectionReportsAttribute($reports) : array
+    {
+        $reports = Util::JsonDecode($reports);
+        foreach ($reports as &$report) {
+            $report = url('storage/reports/'.$report);
+        }
+
+        return $reports;
     }
 
     /**
@@ -64,7 +87,7 @@ class Product extends Model
      */
     public static $rules = [
     ];
-    
+
     public function category()
     {
         return $this->belongsTo('App\Models\Category', 'category_id', 'id');

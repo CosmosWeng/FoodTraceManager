@@ -45,4 +45,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/products/{products}', ['as' => 'admin.products.show', 'uses' => 'ProductController@show']);
     Route::get('admin/products/{products}/edit', ['as' => 'admin.products.edit', 'uses' => 'ProductController@edit']);
 });
-Route::get('google_sheet_sync', 'GoogleSheetSyncController@index');
+Route::get('google_sheet_sync', 'GoogleSheetSyncController@sync');
