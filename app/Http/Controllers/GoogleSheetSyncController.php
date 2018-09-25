@@ -22,21 +22,16 @@ class GoogleSheetSyncController extends AppBaseController
      */
     public function sync(Request $request)
     {
-        $config = $this->getConfig();
-        // clear data
-        DB::table('categories')->truncate();
+        DB::transaction(function () {
+            DB::table('categories')->delete();
+            // run setting
+            $config = $this->getConfig();
+            foreach ($config as $index => $setting) {
+                $this->format($setting);
+            }
+        });
 
-        header('Content-type: text/html; charset=utf-8');
-        for ($i = 0; $i < 10; $i++) {
-            echo $i;
-            flush();
-            sleep(1);
-        }
-
-        // run setting
-        // foreach ($config as $index => $setting) {
-        //     $this->format($setting);
-        // }
+        echo '最後請確認 圖片 是否上傳至 指定資料夾!'.'<br>';
     }
 
     public function format(array $data)
@@ -53,7 +48,105 @@ class GoogleSheetSyncController extends AppBaseController
         }
     }
 
-    public function getProductField($data, $changType = false)
+    public function setKnowledge($data)
+    {
+        $setting   = $this->getField($data);
+        $sheets    = $this->run('新知');
+        $key       = array_shift($sheets);
+        $itemIndex = [];
+        foreach ($setting as $field => $value) {
+            foreach ($key as $index => $keyVal) {
+                if ($value == $keyVal) {
+                    $itemIndex[$field] = $index;
+                    continue;
+                }
+            }
+        }
+        //
+        $items = [];
+        $type  = $this->getField($data, true);
+        foreach ($sheets as $sheet) {
+            $item = [];
+            foreach ($itemIndex as $field => $index) {
+                if (isset($sheet[$index])) {
+                    if (isset($type[$field]) && $type[$field]) {
+                        if ($type[$field] == 'array') {
+                            $item[$field] = Util::JsonEncode(explode("\n", $sheet[$index]));
+                        }
+                    } else {
+                        $item[$field] = $sheet[$index];
+                    }
+                }
+            }
+            $items[]              = $item;
+        }
+
+        $db = DB::table('knowledges');
+        $db->delete();
+        $db->insert($items);
+
+        echo '食安新知 同步完成'.'<br>';
+    }
+
+    public function setProducts($data)
+    {
+        # code...
+        $setting    = $this->getField($data);
+        $categories = DB::table('categories')->where('type', 'products')->get();
+        $products   = [];
+        foreach ($categories as $category) {
+            $sheets = $this->run($category->name);
+            $key    = array_shift($sheets);
+
+            $productIndex = [];
+            foreach ($setting as $field => $value) {
+                foreach ($key as $index => $keyVal) {
+                    if ($value == $keyVal) {
+                        $productIndex[$field] = $index;
+                        continue;
+                    }
+                }
+            }
+            // dd($productIndex, $key, $sheets);
+            $type = $this->getField($data, true);
+            foreach ($sheets as $sheet) {
+                foreach ($productIndex as $field => $index) {
+                    if (isset($sheet[$index])) {
+                        if (isset($type[$field]) && $type[$field]) {
+                            if ($type[$field] == 'array') {
+                                $product[$field] = Util::JsonEncode(explode("\n", $sheet[$index]));
+                            }
+                        } else {
+                            $product[$field] = $sheet[$index];
+                        }
+                    }
+                }
+                $product['category_id'] = $category->id;
+                $products[]             = $product;
+            }
+        }
+        // dd($products);
+        $db = DB::table('products');
+        $db->delete();
+        $db->insert($products);
+        // copy image
+        echo '食安資訊 同步完成'.'<br>';
+    }
+
+    public function setCategory($type, $data)
+    {
+        $data = array_map(function ($row) use ($type) {
+            return [
+                'name' => $row,
+                'type' => $type
+            ];
+        }, $data);
+
+        DB::table('categories')->insert($data);
+        echo $type.' 分類 同步完成'.'<br>';
+    }
+
+    public function getField($data, $changType = false)
     {
         $setting = [];
         foreach ($data as $value) {
@@ -74,62 +167,6 @@ class GoogleSheetSyncController extends AppBaseController
         }
 
         return $setting;
-    }
-
-    public function setProducts($data)
-    {
-        # code...
-        $setting    = $this->getProductField($data);
-        $categories = DB::table('categories')->where('type', 'products')->get();
-        $products   = [];
-        foreach ($categories as $category) {
-            $sheets = $this->run($category->name);
-            $key    = array_shift($sheets);
-
-            $productIndex = [];
-            foreach ($setting as $field => $value) {
-                foreach ($key as $index => $keyVal) {
-                    if ($value == $keyVal) {
-                        $productIndex[$field] = $index;
-                        continue;
-                    }
-                }
-            }
-            // dd($productIndex, $key, $sheets);
-            $type = $this->getProductField($data, true);
-            foreach ($sheets as $sheet) {
-                foreach ($productIndex as $field => $index) {
-                    if (isset($sheet[$index])) {
-                        if (isset($type[$field]) && $type[$field]) {
-                            if ($type[$field] == 'array') {
-                                $product[$field] = Util::JsonEncode(explode("\n", $sheet[$index]));
-                            }
-                        } else {
-                            $product[$field] = $sheet[$index];
-                        }
-                    }
-                }
-                $product['category_id'] = $category->id;
-                $products[]             = $product;
-            }
-        }
-        // dd($products);
-        $db = DB::table('products');
-        $db->truncate();
-        $db->insert($products);
-        // copy image
-    }
-
-    public function setCategory($type, $data)
-    {
-        $data = array_map(function ($row) use ($type) {
-            return [
-                'name' => $row,
-                'type' => $type
-            ];
-        }, $data);
-
-        DB::table('categories')->insert($data);
     }
 
     /**
