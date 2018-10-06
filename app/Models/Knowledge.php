@@ -73,7 +73,7 @@ class Knowledge extends Model
 
     public function getImageAttribute($image) : string
     {
-        return url('storage/knowledges/'.$image);
+        return url('storage/knowledges/'.urlencode($image));
     }
 
     /**

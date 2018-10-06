@@ -64,7 +64,7 @@ class Product extends Model
     {
         $images = Util::JsonDecode($images);
         foreach ($images as &$image) {
-            $image = url('storage/images/'.$image);
+            $image = url('storage/images/'.urlencode($image));
         }
 
         return $images;
@@ -74,7 +74,7 @@ class Product extends Model
     {
         $reports = Util::JsonDecode($reports);
         foreach ($reports as &$report) {
-            $report = url('storage/reports/'.$report);
+            $report = url('storage/reports/'.urlencode($report));
         }
 
         return $reports;
