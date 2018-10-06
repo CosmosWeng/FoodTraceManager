@@ -71,7 +71,7 @@ class Knowledge extends Model
         return $date->format('Y-m-d H:m:s');
     }
 
-    public function getImageAttribute($image) : array
+    public function getImageAttribute($image) : string
     {
         return url('storage/knowledges/'.$image);
     }
