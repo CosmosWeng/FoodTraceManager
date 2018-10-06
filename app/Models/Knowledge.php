@@ -40,7 +40,7 @@ use Eloquent as Model;
 class Knowledge extends Model
 {
     public $table = 'knowledges';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -63,14 +63,24 @@ class Knowledge extends Model
         'url'   => 'string',
         'date'  => 'date'
     ];
-    
+
     public function getDateAttribute($value): string
     {
         $date = $this->asDateTime($value);
 
         return $date->format('Y-m-d H:m:s');
     }
-    
+
+    public function getImageAttribute($images) : array
+    {
+        $images = Util::JsonDecode($images);
+        foreach ($images as &$image) {
+            $image = url('storage/knowledges/'.$image);
+        }
+
+        return $images;
+    }
+
     /**
      * Validation rules
      *
