@@ -68,7 +68,7 @@ class Knowledge extends Model
     {
         $date = $this->asDateTime($value);
 
-        return $date->format('Y-m-d H:m:s');
+        return $date->format('Y-m-d');
     }
 
     public function getImageAttribute($image) : string

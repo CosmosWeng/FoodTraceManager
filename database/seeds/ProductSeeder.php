@@ -16,11 +16,11 @@ class ProductSeeder extends Seeder
     public function run()
     {
         $mapping = [
-          '穀類、塊根及塊莖原料及其製品' => '米',
-          '食用油脂製品'         => '食用油',
-          '乳類製品'           => '乳製品',
-          '麵條、粉條類製品'       => '麵條',
-          '蛋類製品'           => '蛋'
+            '穀類、塊根及塊莖原料及其製品' => '米',
+            '食用油脂製品'         => '食用油',
+            '乳類製品'           => '乳製品',
+            '麵條、粉條類製品'       => '麵條',
+            '蛋類製品'           => '蛋',
         ];
 
         $categories = Category::all();
@@ -30,7 +30,7 @@ class ProductSeeder extends Seeder
             $categoryTextMapping[$category->name] = $category->id;
         }
 
-        $datas      = Opendata::where('image_start_at', '!=', '')->inRandomOrder()->get();
+        $datas = Opendata::where('image_start_at', '!=', '')->inRandomOrder()->get();
         // $datas      = $datas->random(200);
         // dd(count($datas));
 

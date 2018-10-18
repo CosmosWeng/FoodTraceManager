@@ -2,21 +2,82 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
 use App\Utils\Util;
+use Eloquent as Model;
 
 /**
- * Class Product
- * @package App\Models
- * @version June 15, 2018, 7:18 am UTC
- *
- * @property integer category_id
- * @property string company
- * @property string name
- * @property string url
- * @property string images
- * @property string inspection_reports
- * @property date inspection_date
+ * @SWG\Definition(
+ *      definition="Product",
+ *      required={""},
+ *      @SWG\Property(
+ *          property="id",
+ *          description="id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="category_id",
+ *          description="category_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="name",
+ *          description="name",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="spec",
+ *          description="spec",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="description",
+ *          description="description",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="company",
+ *          description="company",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="warning_sign_text",
+ *          description="warning_sign_text",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="url",
+ *          description="url",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="images",
+ *          description="images",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="inspection_date",
+ *          description="inspection_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="inspection_subject",
+ *          description="inspection_subject",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="inspection_items",
+ *          description="inspection_items",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="inspection_reports",
+ *          description="inspection_reports",
+ *          type="string"
+ *      )
+ * )
  */
 class Product extends Model
 {
@@ -27,13 +88,17 @@ class Product extends Model
 
     public $fillable = [
         'category_id',
-        'company',
         'name',
+        'spec',
+        'description',
+        'company',
+        'warning_sign_text',
         'url',
         'images',
-        'inspection_text',
-        'inspection_reports',
-        'inspection_date'
+        'inspection_date',
+        'inspection_subject',
+        'inspection_items',
+        'inspection_reports'
     ];
 
     /**
@@ -44,30 +109,38 @@ class Product extends Model
     protected $casts = [
         'id'                 => 'integer',
         'category_id'        => 'integer',
-        'company'            => 'string',
         'name'               => 'string',
+        'spec'               => 'string',
+        'description'        => 'string',
+        'company'            => 'string',
+        'warning_sign_text'  => 'string',
         'url'                => 'string',
         'images'             => 'array',
-        'inspection_text'    => 'string',
-        'inspection_reports' => 'array',
-        'inspection_date'    => 'date'
+        'inspection_date'    => 'date',
+        'inspection_subject' => 'string',
+        'inspection_items'   => 'array',
+        'inspection_reports' => 'array'
     ];
 
-    public function getInspectionDateAttribute($value): string
+    public function setInspectionDateAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['inspection_date'] = $value;
+        }
+    }
+
+    public function getWarningSignTextAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        }
+    }
+
+    public function getInspectionDateAttribute($value)
     {
         $date = $this->asDateTime($value);
 
         return $date->format('Y-m-d');
-    }
-
-    public function getImagesAttribute($images) : array
-    {
-        $images = Util::JsonDecode($images);
-        foreach ($images as &$image) {
-            $image = url('storage/images/'.urlencode($image));
-        }
-
-        return $images;
     }
 
     public function getInspectionReportsAttribute($reports) : array

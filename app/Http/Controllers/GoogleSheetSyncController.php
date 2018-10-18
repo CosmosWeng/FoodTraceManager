@@ -24,6 +24,8 @@ class GoogleSheetSyncController extends AppBaseController
     {
         DB::transaction(function () {
             DB::table('categories')->delete();
+            DB::statement('ALTER TABLE categories AUTO_INCREMENT = 1;');
+
             // run setting
             $config = $this->getConfig();
             foreach ($config as $index => $setting) {
@@ -83,6 +85,8 @@ class GoogleSheetSyncController extends AppBaseController
 
         $db = DB::table('knowledges');
         $db->delete();
+        DB::statement('ALTER TABLE knowledges AUTO_INCREMENT = 1;');
+
         $db->insert($items);
 
         echo '食安新知 同步完成'.'<br>';
@@ -93,10 +97,15 @@ class GoogleSheetSyncController extends AppBaseController
         # code...
         $setting    = $this->getField($data);
         $categories = DB::table('categories')->where('type', 'products')->get();
+        $db         = new Product;
+        $db->delete();
+        DB::statement('ALTER TABLE products AUTO_INCREMENT = 1;');
+
         $products   = [];
         foreach ($categories as $category) {
-            $sheets = $this->run($category->name);
-            $key    = array_shift($sheets);
+            $sheets  = $this->run($category->name);
+            $key     = array_shift($sheets);
+            $pototyp = array_shift($sheets);
 
             $productIndex = [];
             foreach ($setting as $field => $value) {
@@ -114,7 +123,7 @@ class GoogleSheetSyncController extends AppBaseController
                     if (isset($sheet[$index])) {
                         if (isset($type[$field]) && $type[$field]) {
                             if ($type[$field] == 'array') {
-                                $product[$field] = Util::JsonEncode(explode("\n", $sheet[$index]));
+                                $product[$field] = explode("\n", $sheet[$index]);
                             }
                         } else {
                             $product[$field] = $sheet[$index];
@@ -122,13 +131,11 @@ class GoogleSheetSyncController extends AppBaseController
                     }
                 }
                 $product['category_id'] = $category->id;
-                $products[]             = $product;
+                $db->create($product);
+                // $products[]             = $product;
             }
         }
-        // dd($products);
-        $db = DB::table('products');
-        $db->delete();
-        $db->insert($products);
+
         // copy image
         echo '食安資訊 同步完成'.'<br>';
     }

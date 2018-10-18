@@ -8,12 +8,12 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class ProductRepository
  * @package App\Repositories
- * @version June 15, 2018, 7:18 am UTC
+ * @version October 18, 2018, 8:44 pm CST
  *
  * @method Product findWithoutFail($id, $columns = ['*'])
  * @method Product find($id, $columns = ['*'])
  * @method Product first($columns = ['*'])
- */
+*/
 class ProductRepository extends BaseRepository
 {
     /**
@@ -21,12 +21,17 @@ class ProductRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'category_id',
-        'company',
         'name',
+        'spec',
+        'description',
+        'company',
+        'warning_sign_text',
         'url',
         'images',
-        'inspection_reports',
-        'inspection_date'
+        'inspection_date',
+        'inspection_subject',
+        'inspection_items',
+        'inspection_reports'
     ];
 
     /**
