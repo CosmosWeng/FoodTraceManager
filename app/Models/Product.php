@@ -141,7 +141,7 @@ class Product extends Model
         if ($images) {
             $images = Util::JsonDecode($images);
             foreach ($images as &$image) {
-                $image = url('storage/reports/'.urlencode($image));
+                $image = url('storage/products/'.urlencode($image));
             }
             unset($image);
         }
