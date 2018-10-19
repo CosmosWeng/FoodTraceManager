@@ -18,15 +18,15 @@ class ResponseUtil
             'data'    => null,
             'message' => $message,
         ];
-        
+
         if (! empty($data)) {
             $response['data'] = $data;
         }
-        
-        if (config('app.debug')) {
-            $response['sql'] = Util::getSqlLogs();
-        }
-        
+
+        // if (config('app.env') != 'production') {
+        //     $response['sql'] = Util::getSqlLogs();
+        // }
+
         return $response;
     }
 
@@ -47,10 +47,10 @@ class ResponseUtil
         if (! empty($data)) {
             $response['data'] = $data;
         }
-        
-        if (config('app.debug')) {
-            $response['sql'] = Util::getSqlLogs();
-        }
+
+        // if (config('app.env') != 'production') {
+        //     $response['sql'] = Util::getSqlLogs();
+        // }
 
         return $response;
     }

@@ -66,9 +66,13 @@ class Knowledge extends Model
 
     public function getDateAttribute($value): string
     {
-        $date = $this->asDateTime($value);
+        if ($value) {
+            $date = $this->asDateTime($value);
 
-        return $date->format('Y-m-d');
+            return $date->format('Y-m-d');
+        }
+
+        return $value;
     }
 
     public function getImageAttribute($image) : string

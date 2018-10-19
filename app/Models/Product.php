@@ -136,18 +136,38 @@ class Product extends Model
         }
     }
 
-    public function getInspectionDateAttribute($value)
+    public function getImagesAttribute($images)
     {
-        $date = $this->asDateTime($value);
+        if ($images) {
+            $images = Util::JsonDecode($images);
+            foreach ($images as &$image) {
+                $image = url('storage/reports/'.urlencode($image));
+            }
+            unset($image);
+        }
 
-        return $date->format('Y-m-d');
+        return $images;
     }
 
-    public function getInspectionReportsAttribute($reports) : array
+    public function getInspectionDateAttribute($value)
     {
-        $reports = Util::JsonDecode($reports);
-        foreach ($reports as &$report) {
-            $report = url('storage/reports/'.urlencode($report));
+        if ($value) {
+            $date = $this->asDateTime($value);
+
+            return $date->format('Y-m-d');
+        }
+
+        return $value;
+    }
+
+    public function getInspectionReportsAttribute($reports)
+    {
+        if ($reports) {
+            $reports = Util::JsonDecode($reports);
+            foreach ($reports as &$report) {
+                $report = url('storage/reports/'.urlencode($report));
+            }
+            unset($report);
         }
 
         return $reports;

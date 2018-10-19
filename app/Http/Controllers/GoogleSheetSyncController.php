@@ -97,9 +97,11 @@ class GoogleSheetSyncController extends AppBaseController
         # code...
         $setting    = $this->getField($data);
         $categories = DB::table('categories')->where('type', 'products')->get();
-        $db         = new Product;
+
+        $db = DB::table('products');
         $db->delete();
         DB::statement('ALTER TABLE products AUTO_INCREMENT = 1;');
+        $db = new Product;
 
         $products   = [];
         foreach ($categories as $category) {
@@ -119,6 +121,7 @@ class GoogleSheetSyncController extends AppBaseController
             // dd($productIndex, $key, $sheets);
             $type = $this->getField($data, true);
             foreach ($sheets as $sheet) {
+                $product = [];
                 foreach ($productIndex as $field => $index) {
                     if (isset($sheet[$index])) {
                         if (isset($type[$field]) && $type[$field]) {
