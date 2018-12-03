@@ -96,7 +96,8 @@ class GoogleSheetSyncController extends AppBaseController
     {
         # code...
         $setting    = $this->getField($data);
-        $categories = DB::table('categories')->where('type', 'products')->get();
+        // $categories = DB::table('categories')->where('type', 'products')->get();
+        $categories = DB::table('categories')->get();
 
         $db = DB::table('products');
         $db->delete();

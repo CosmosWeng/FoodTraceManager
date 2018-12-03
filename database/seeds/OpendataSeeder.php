@@ -5,13 +5,13 @@ use Illuminate\Database\Seeder;
 class OpendataSeeder extends Seeder
 {
     private $include = [
-      '食用油脂製品',
-      '乳類製品',
-      '穀類、塊根及塊莖原料及其製品',
-      '澱粉類及澱粉水解之糖、轉化糖或糖漿相關製品',
-      '烘焙炊蒸製品',
-      '麵條、粉條類製品',
-      '蛋類製品'
+        '食用油脂製品',
+        '乳類製品',
+        '穀類、塊根及塊莖原料及其製品',
+        '澱粉類及澱粉水解之糖、轉化糖或糖漿相關製品',
+        '烘焙炊蒸製品',
+        '麵條、粉條類製品',
+        '蛋類製品'
     ];
     /**
      * Run the database seeds.
@@ -22,7 +22,7 @@ class OpendataSeeder extends Seeder
     {
         ini_set('memory_limit', '2048M');
         $filePath = storage_path('app').'/188_2.csv';
-        
+
         try {
             $file     = fopen($filePath, 'r');
             $header   = fgetcsv($file);
@@ -35,7 +35,7 @@ class OpendataSeeder extends Seeder
                 if (count($contents) != $head_len) {
                     continue;
                 }
-              
+
                 $product = [];
                 foreach ($contents as $key => &$content) {
                     $index = $header[$key];
@@ -50,19 +50,19 @@ class OpendataSeeder extends Seeder
                     unset($contents);
                     continue;
                 }
-              
+
                 $data[] = $product;
                 if (count($data) > 1000) {
                     $this->insertDB($data);
                     $data = [];
                 }
-                
+
                 unset($product);
                 unset($content);
                 unset($contents);
             }
             fclose($file);
-          
+
             if (count($data) > 0) {
                 $this->insertDB($data);
             }
@@ -70,12 +70,12 @@ class OpendataSeeder extends Seeder
             dd($e);
         }
     }
-    
+
     public function insertDB(&$data)
     {
         DB::table('opendata')->insert($data);
     }
-    
+
     public function removeBomUtf8($s)
     {
         if (substr($s, 0, 3) == chr(hexdec('EF')).chr(hexdec('BB')).chr(hexdec('BF'))) {
@@ -144,7 +144,7 @@ class OpendataSeeder extends Seeder
           '檢驗報告三'       => 'inspection_report_3',
         ];
     }
-    
+
     // public function header()
     // {
     //     return [

@@ -16,20 +16,20 @@ class KnowledgeSeeder extends Seeder
         $faker = Faker\Factory::create('zh_TW');
         $faker->addProvider(new EmanueleMinotto\Faker\PlaceholdItProvider($faker));
         $faker->addProvider(new Faker\Provider\Youtube($faker));
-        
+
         $this->faker = $faker;
-        
+
         for ($i = 0; $i < 50; $i++) {
             $data  = [
-              'title'  => $faker->realText($faker->numberBetween(10, 20)),
-              'image'  => $this->randImage(rand(2, 5)),
-              'date'   => $faker->dateTimeBetween('now', '10 years')->format('Y-m-d H:i:s'),
-              'url'    => $faker->youtubeUri()
+                'title'  => $faker->realText($faker->numberBetween(10, 20)),
+                'image'  => $this->randImage(rand(2, 5)),
+                'date'   => $faker->dateTimeBetween('now', '10 years')->format('Y-m-d H:i:s'),
+                'url'    => $faker->youtubeUri()
             ];
             Knowledge::create($data);
         }
     }
-    
+
     public function randImage($n)
     {
         $background = ['000', 'FF0000', '0000CD', 'FFFF00', '32CD32'];

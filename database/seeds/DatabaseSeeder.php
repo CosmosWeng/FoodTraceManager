@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Http\Controllers\GoogleSheetSyncController;
+use Illuminate\Http\Request;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,11 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(OpendataSeeder::class);
-        $this->call(CategorySeeder::class);
-        $this->call(ProductSeeder::class);
+        $request                   = new Request;
+        $GoogleSheetSyncController = new GoogleSheetSyncController;
+        $GoogleSheetSyncController->sync($request);
+        // $this->call(OpendataSeeder::class);
+        // $this->call(CategorySeeder::class);
+        // $this->call(ProductSeeder::class);
 
-        $this->call(KnowledgeSeeder::class);
-        $this->call(TopicSeeder::class);
+        // $this->call(KnowledgeSeeder::class);
+        // $this->call(TopicSeeder::class);
     }
 }

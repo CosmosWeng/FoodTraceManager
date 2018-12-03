@@ -61,7 +61,13 @@ class KnowledgeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $this->knowledgeRepository->pushCriteria(new RequestCriteria($request));
-        $knowledge = $this->knowledgeRepository->paginate($request->get('limit', null));
+
+        $knowledge = $this->knowledgeRepository;
+        if (! $request->has('orderBy') && ! $request->has('orderBy')) {
+            $knowledge = $knowledge->orderBy('date', 'desc');
+        }
+
+        $knowledge = $knowledge->paginate($request->get('limit', null));
 
         return $this->sendPaginateResponse($knowledge->toArray(), 'Knowledge retrieved successfully');
     }
