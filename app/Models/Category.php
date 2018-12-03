@@ -42,6 +42,11 @@ class Category extends Model
     public static $rules = [
     ];
 
+    public function getNameAttribute($value)
+    {
+        return explode('-', $value)[0];
+    }
+
     /**
      * Products
      *
