@@ -138,15 +138,17 @@ class Product extends Model
 
     public function getImagesAttribute($images)
     {
-        if ($images) {
+        $images = Util::JsonDecode($images);
+        if ($images && $images[0]) {
             $category_id = $this->category_id;
             $type        = Category::find($category_id)->type;
 
-            $images = Util::JsonDecode($images);
             foreach ($images as &$image) {
                 $image = url('storage/'.$type.'/'.urlencode($image));
             }
             unset($image);
+        } else {
+            return null;
         }
 
         return $images;
