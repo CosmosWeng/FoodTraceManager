@@ -139,9 +139,12 @@ class Product extends Model
     public function getImagesAttribute($images)
     {
         if ($images) {
+            $category_id = $this->category_id;
+            $type        = Category::find($category_id)->type;
+
             $images = Util::JsonDecode($images);
             foreach ($images as &$image) {
-                $image = url('storage/products/'.urlencode($image));
+                $image = url('storage/'.$type.'/'.urlencode($image));
             }
             unset($image);
         }
@@ -163,9 +166,12 @@ class Product extends Model
     public function getInspectionReportsAttribute($reports)
     {
         if ($reports) {
+            $category_id = $this->category_id;
+            $type        = Category::find($category_id)->type;
+
             $reports = Util::JsonDecode($reports);
             foreach ($reports as &$report) {
-                $report = url('storage/reports/'.urlencode($report));
+                $report = url('storage/reports/'.$type.'/'.urlencode($report));
             }
             unset($report);
         }
